@@ -9,14 +9,10 @@ package compilador;
  *
  * @author Marcos Paulo
  */
-public class Compilador {
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-            
-        System.out.println("" + enumCodigo.FINALARQUIVO.getCodigo());
-    }
+public class retornoLexico {
+    
+    public int LinhaArquivo;
+    public int Codigo;
+    public String Token;
     
 }
