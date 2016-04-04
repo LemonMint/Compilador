@@ -16,12 +16,16 @@ import java.util.ArrayList;
  */
 public class analisar {
 
-    ArrayList<retornoLexico> retornoLexico = new ArrayList<retornoLexico>();
-    public static void analisarLinha(String caminhoArquivo) {
+    
+    public static ArrayList<retornoLexico> analisarLinha(String caminhoArquivo) {
+        ArrayList<retornoLexico> retornoLexico = new ArrayList<retornoLexico>();
+        
         try {
+            
             int numeroLinha = 0;
             FileReader arquivo = new FileReader(caminhoArquivo);
             BufferedReader arquivoLido = new BufferedReader(arquivo);
+            
             String linhaParaAnalisar = arquivoLido.readLine();
 
             while (linhaParaAnalisar != null) {
@@ -35,24 +39,24 @@ public class analisar {
                         //comando ou erro
                         String comando = "";
                         do {
-
                             comando += expressao[i];
                             i++;
-
                             if (expressao.length <= i) {
                                 //Chama método de identificação
                                 retornoLexico retorno = identificarPalavraReservada(comando);
                                 retorno.LinhaArquivo = numeroLinha;
+                                
+                                retornoLexico.add(retorno);
                                 break;
                             }
-                        } while ((expressao.length-1) > i && String.valueOf(expressao[i]).matches("[a-zA-Z]"));
+                        } while ((expressao.length - 1) >= i && String.valueOf(expressao[i]).matches("[a-zA-Z]"));
 
-                        if ((expressao.length-1) > i && String.valueOf(expressao[i]).matches("[0-9]")) {
+                        if ((expressao.length - 1) >= i && String.valueOf(expressao[i]).matches("[0-9]")) {
                             //retorna erro
                         }
                         //Chama método de identificação
                     }
-                    if ((expressao.length-1) > i && expressao[i] == '"') {
+                    if ((expressao.length - 1) >= i && expressao[i] == '"') {
                         do {
 
                             i++;
@@ -64,7 +68,7 @@ public class analisar {
                         //Retornar regra de literal.
                     }
 
-                    if ((expressao.length-1) > i && expressao[i] == '{') {
+                    if ((expressao.length - 1) >= i && expressao[i] == '{') {
                         do {
 
                             i++;
@@ -76,16 +80,12 @@ public class analisar {
 
                     }
 
-                    if ((expressao.length-1) > i && expressao[i] == '#') {
+                    if ((expressao.length - 1) >= i && expressao[i] == '#') {
                         break;
                     }
 
-                    switch (expressao[i]) {
-
-                    }
-
                 }
-                
+
                 linhaParaAnalisar = arquivoLido.readLine();
             }
 
@@ -94,17 +94,149 @@ public class analisar {
         }
 
         //TODO: VERIFICAR SE ESTÃO SENDO FECHADAS AS ASPAS OU CHAVES
+        return retornoLexico;
     }
-    
-    private static retornoLexico identificarPalavraReservada(String palavra){
-    
-        if(palavra.equals("PROGRAM")){
-            retornoLexico retorno =  new retornoLexico();
-            retorno.Codigo = 01;
-            retorno.Token = palavra;
-            return retorno;
+
+    private static retornoLexico identificarPalavraReservada(String palavra) {
+        retornoLexico retorno = new retornoLexico();
+        switch (palavra) {
+
+            case "PROGRAM":
+                retorno.Codigo = enumCodigo.PROGRAM.getCodigo();
+                retorno.Token = palavra;
+                return retorno;
+
+            case "LABEL":
+                retorno.Codigo = enumCodigo.LABEL.getCodigo();
+                retorno.Token = palavra;
+                return retorno;
+
+            case "CONST":
+                retorno.Codigo = enumCodigo.CONST.getCodigo();
+                retorno.Token = palavra;
+                return retorno;
+
+            case "VAR":
+                retorno.Codigo = enumCodigo.VAR.getCodigo();
+                retorno.Token = palavra;
+                return retorno;
+
+            case "PROCEDURE":
+                retorno.Codigo = enumCodigo.PROCEDURE.getCodigo();
+                retorno.Token = palavra;
+                return retorno;
+
+            case "BEGIN":
+                retorno.Codigo = enumCodigo.BEGIN.getCodigo();
+                retorno.Token = palavra;
+                return retorno;
+
+            case "END":
+                retorno.Codigo = enumCodigo.END.getCodigo();
+                retorno.Token = palavra;
+                return retorno;
+
+            case "INT":
+                retorno.Codigo = enumCodigo.INT.getCodigo();
+                retorno.Token = palavra;
+                return retorno;
+
+            case "ARRAY":
+                retorno.Codigo = enumCodigo.ARRAY.getCodigo();
+                retorno.Token = palavra;
+                return retorno;
+
+            case "OF":
+                retorno.Codigo = enumCodigo.OF.getCodigo();
+                retorno.Token = palavra;
+                return retorno;
+
+            case "CALL":
+                retorno.Codigo = enumCodigo.CALL.getCodigo();
+                retorno.Token = palavra;
+                return retorno;
+
+            case "GOTO":
+                retorno.Codigo = enumCodigo.GOTO.getCodigo();
+                retorno.Token = palavra;
+                return retorno;
+
+            case "IF":
+                retorno.Codigo = enumCodigo.IF.getCodigo();
+                retorno.Token = palavra;
+                return retorno;
+
+            case "THEN":
+                retorno.Codigo = enumCodigo.THEN.getCodigo();
+                retorno.Token = palavra;
+                return retorno;
+
+            case "ELSE":
+                retorno.Codigo = enumCodigo.ELSE.getCodigo();
+                retorno.Token = palavra;
+                return retorno;
+
+            case "WHILE":
+                retorno.Codigo = enumCodigo.WHILE.getCodigo();
+                retorno.Token = palavra;
+                return retorno;
+
+            case "DO":
+                retorno.Codigo = enumCodigo.DO.getCodigo();
+                retorno.Token = palavra;
+                return retorno;
+
+            case "REPEAT":
+                retorno.Codigo = enumCodigo.REPEAT.getCodigo();
+                retorno.Token = palavra;
+                return retorno;
+
+            case "UNTIL":
+                retorno.Codigo = enumCodigo.UNTIL.getCodigo();
+                retorno.Token = palavra;
+                return retorno;
+
+            case "READLN":
+                retorno.Codigo = enumCodigo.READLN.getCodigo();
+                retorno.Token = palavra;
+                return retorno;
+
+            case "WRITELN":
+                retorno.Codigo = enumCodigo.WRITELN.getCodigo();
+                retorno.Token = palavra;
+                return retorno;
+
+            case "OR":
+                retorno.Codigo = enumCodigo.OR.getCodigo();
+                retorno.Token = palavra;
+                return retorno;
+
+            case "AND":
+                retorno.Codigo = enumCodigo.AND.getCodigo();
+                retorno.Token = palavra;
+                return retorno;
+
+            case "NOT":
+                retorno.Codigo = enumCodigo.NOT.getCodigo();
+                retorno.Token = palavra;
+                return retorno;
+
+            case "FOR":
+                retorno.Codigo = enumCodigo.FOR.getCodigo();
+                retorno.Token = palavra;
+                return retorno;
+
+            case "TO":
+                retorno.Codigo = enumCodigo.TO.getCodigo();
+                retorno.Token = palavra;
+                return retorno;
+
+            case "CASE":
+                retorno.Codigo = enumCodigo.CASE.getCodigo();
+                retorno.Token = palavra;
+                return retorno;
         }
-    
+
         return new retornoLexico();
     }
 
