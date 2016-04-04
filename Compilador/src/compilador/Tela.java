@@ -34,18 +34,19 @@ public class Tela extends javax.swing.JFrame {
         jTable1 = new javax.swing.JTable();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
-        jMenuItem1 = new javax.swing.JMenuItem();
-        jMenuItem2 = new javax.swing.JMenuItem();
-        jMenuItem3 = new javax.swing.JMenuItem();
-        jMenuItem4 = new javax.swing.JMenuItem();
+        MenuNovo = new javax.swing.JMenuItem();
+        MenuAbrir = new javax.swing.JMenuItem();
+        MenuSalvar = new javax.swing.JMenuItem();
+        MenuSair = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
-        jMenuItem5 = new javax.swing.JMenuItem();
+        MenuCompilar = new javax.swing.JMenuItem();
         jMenu3 = new javax.swing.JMenu();
-        jMenuItem6 = new javax.swing.JMenuItem();
-        jMenuItem7 = new javax.swing.JMenuItem();
-        jMenuItem8 = new javax.swing.JMenuItem();
+        MenuManual = new javax.swing.JMenuItem();
+        MenuCreditos = new javax.swing.JMenuItem();
+        MenuAtualizar = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setMinimumSize(new java.awt.Dimension(800, 600));
         setPreferredSize(new java.awt.Dimension(800, 600));
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
@@ -97,42 +98,42 @@ public class Tela extends javax.swing.JFrame {
 
         jMenu1.setText("Arquivo");
 
-        jMenuItem1.setText("Novo");
-        jMenu1.add(jMenuItem1);
+        MenuNovo.setText("Novo");
+        jMenu1.add(MenuNovo);
 
-        jMenuItem2.setText("Abrir");
-        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+        MenuAbrir.setText("Abrir");
+        MenuAbrir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem2ActionPerformed(evt);
+                MenuAbrirActionPerformed(evt);
             }
         });
-        jMenu1.add(jMenuItem2);
+        jMenu1.add(MenuAbrir);
 
-        jMenuItem3.setText("Salvar");
-        jMenu1.add(jMenuItem3);
+        MenuSalvar.setText("Salvar");
+        jMenu1.add(MenuSalvar);
 
-        jMenuItem4.setText("Sair");
-        jMenu1.add(jMenuItem4);
+        MenuSair.setText("Sair");
+        jMenu1.add(MenuSair);
 
         jMenuBar1.add(jMenu1);
 
         jMenu2.setText("Executar");
 
-        jMenuItem5.setText("Compilar");
-        jMenu2.add(jMenuItem5);
+        MenuCompilar.setText("Compilar");
+        jMenu2.add(MenuCompilar);
 
         jMenuBar1.add(jMenu2);
 
         jMenu3.setText("Ajuda");
 
-        jMenuItem6.setText("Manual");
-        jMenu3.add(jMenuItem6);
+        MenuManual.setText("Manual");
+        jMenu3.add(MenuManual);
 
-        jMenuItem7.setText("Créditos");
-        jMenu3.add(jMenuItem7);
+        MenuCreditos.setText("Créditos");
+        jMenu3.add(MenuCreditos);
 
-        jMenuItem8.setText("Atualizar");
-        jMenu3.add(jMenuItem8);
+        MenuAtualizar.setText("Atualizar");
+        jMenu3.add(MenuAtualizar);
 
         jMenuBar1.add(jMenu3);
 
@@ -141,9 +142,9 @@ public class Tela extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+    private void MenuAbrirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuAbrirActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jMenuItem2ActionPerformed
+    }//GEN-LAST:event_MenuAbrirActionPerformed
 
     /**
      * @param args the command line arguments
@@ -181,18 +182,18 @@ public class Tela extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuItem MenuAbrir;
+    private javax.swing.JMenuItem MenuAtualizar;
+    private javax.swing.JMenuItem MenuCompilar;
+    private javax.swing.JMenuItem MenuCreditos;
+    private javax.swing.JMenuItem MenuManual;
+    private javax.swing.JMenuItem MenuNovo;
+    private javax.swing.JMenuItem MenuSair;
+    private javax.swing.JMenuItem MenuSalvar;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem2;
-    private javax.swing.JMenuItem jMenuItem3;
-    private javax.swing.JMenuItem jMenuItem4;
-    private javax.swing.JMenuItem jMenuItem5;
-    private javax.swing.JMenuItem jMenuItem6;
-    private javax.swing.JMenuItem jMenuItem7;
-    private javax.swing.JMenuItem jMenuItem8;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTable1;
