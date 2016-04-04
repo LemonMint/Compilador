@@ -5,18 +5,79 @@
  */
 package compilador;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author Lemon
  */
 public class Tela extends javax.swing.JFrame {
 
+    
+    
     /**
      * Creates new form Tela
      */
     public Tela() {
         initComponents();
+        MenuAbrir.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                JFileChooser fc = new JFileChooser();
+                //Exibe o diálogo. Deve ser passado por parâmetro o JFrame de origem.
+                fc.showOpenDialog(txtArea);
+                //Captura o objeto File que representa o arquivo selecionado.
+                File selFile = fc.getSelectedFile();
+                txtArea.setText(lerArquivo(selFile.getAbsolutePath()));
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+        });
     }
+    
+    private String lerArquivo(String nomeArquivo) {
+        FileReader fileReader = null;
+        BufferedReader bufferedReader = null;
+        try {
+            fileReader = new FileReader(nomeArquivo);
+            bufferedReader = new BufferedReader(fileReader);
+            StringBuilder sb = new StringBuilder();
+            while (bufferedReader.ready()) {
+                sb.append(bufferedReader.readLine());
+                sb.append("\n");
+            }
+            return sb.toString();
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(this, "Erro ao abrir o arquivo: "
+                    + ex.getMessage());
+        } finally {
+            if (bufferedReader != null) {
+                try {
+                    bufferedReader.close();
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(this, "Erro ao abrir o arquivo: "
+                            + ex.getMessage());
+                }
+            }
+            if (fileReader != null) {
+                try {
+                    fileReader.close();
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(this, "Erro ao abrir o arquivo: "
+                            + ex.getMessage());
+                }
+            }
+        }
+        return null;
+    }
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -29,7 +90,7 @@ public class Tela extends javax.swing.JFrame {
         java.awt.GridBagConstraints gridBagConstraints;
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        txtArea = new javax.swing.JTextArea();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         jMenuBar1 = new javax.swing.JMenuBar();
@@ -50,9 +111,9 @@ public class Tela extends javax.swing.JFrame {
         setPreferredSize(new java.awt.Dimension(800, 600));
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jScrollPane1.setViewportView(jTextArea1);
+        txtArea.setColumns(20);
+        txtArea.setRows(5);
+        jScrollPane1.setViewportView(txtArea);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -197,6 +258,6 @@ public class Tela extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTable1;
-    private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JTextArea txtArea;
     // End of variables declaration//GEN-END:variables
 }
