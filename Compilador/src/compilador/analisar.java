@@ -16,20 +16,18 @@ import java.util.ArrayList;
  */
 public class analisar {
 
-    
     public static ArrayList<retornoLexico> analisarLinha(String caminhoArquivo) {
         ArrayList<retornoLexico> retornoLexico = new ArrayList<retornoLexico>();
-        
+
         try {
-            
+
             int numeroLinha = 0;
             FileReader arquivo = new FileReader(caminhoArquivo);
             BufferedReader arquivoLido = new BufferedReader(arquivo);
-            
+
             String linhaParaAnalisar = arquivoLido.readLine();
 
             while (linhaParaAnalisar != null) {
-                System.out.printf("%s\n", linhaParaAnalisar);
                 numeroLinha++;
                 char[] expressao = linhaParaAnalisar.toCharArray();
 
@@ -45,7 +43,7 @@ public class analisar {
                                 //Chama método de identificação
                                 retornoLexico retorno = identificarPalavraReservada(comando);
                                 retorno.LinhaArquivo = numeroLinha;
-                                
+
                                 retornoLexico.add(retorno);
                                 break;
                             }
@@ -53,6 +51,8 @@ public class analisar {
 
                         if ((expressao.length - 1) >= i && String.valueOf(expressao[i]).matches("[0-9]")) {
                             //retorna erro
+                            retornoLexico retorno = new retornoLexico();
+                            retorno.Token = "ERRO LÉXICO - PALAVRA RESERVADA NÃO ENCONTRADA. ";
                         }
                         //Chama método de identificação
                     }
@@ -69,17 +69,47 @@ public class analisar {
                     }
 
                     if ((expressao.length - 1) >= i && expressao[i] == '{') {
-                        do {
-
-                            i++;
-                            //acumular literal
-                            if (expressao.length < i) {
-                                //Criar objeto com erro
+                        boolean encontrou = false;
+                        int j;
+                        for (j = 0; j < expressao.length; j++) {
+                            if (expressao[j] != '}') {
+                                continue;
+                            } else {
+                                i = j;
+                                encontrou = true;
+                                break;
                             }
-                        } while (expressao[i] != '}');
+                        }
+                        i = j;
+                        do {
+                            linhaParaAnalisar = arquivoLido.readLine();
+                            if (linhaParaAnalisar != null) {
+                                numeroLinha++;
+                                if (!linhaParaAnalisar.contains("}")) {
+                                    linhaParaAnalisar = arquivoLido.readLine();
+                                    if (linhaParaAnalisar == null) {
+                                        retornoLexico retorno = new retornoLexico();
+                                        retorno.Token = "NÃO FOI ENCERRADO O COMENTÁRIO DE BLOCO.";
+                                        retornoLexico.add(retorno);
+
+                                        return retornoLexico;
+                                    }
+                                } else {
+                                    encontrou = true;
+                                    expressao = linhaParaAnalisar.toCharArray();
+                                    i = linhaParaAnalisar.indexOf('}');
+                                }
+                            } else {
+                                retornoLexico retorno = new retornoLexico();
+                                retorno.Token = "NÃO FOI ENCERRADO O COMENTÁRIO DE BLOCO.";
+                                retornoLexico.add(retorno);
+
+                                return retornoLexico;
+                            }
+
+                        } while (!encontrou);
 
                     }
-
                     if ((expressao.length - 1) >= i && expressao[i] == '#') {
                         break;
                     }
