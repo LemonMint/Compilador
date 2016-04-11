@@ -5,6 +5,8 @@
  */
 package compilador;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author Marcos Paulo
@@ -15,8 +17,7 @@ public class Compilador {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-            
-        System.out.println("" + enumCodigo.FINALARQUIVO.getCodigo());
+        ArrayList<retornoLexico> retornoLexico = analisar.analisarLinha("C:\\Users\\Lemon\\Desktop\\Teste1.txt") ;
     }
     
 }

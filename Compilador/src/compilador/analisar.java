@@ -56,16 +56,56 @@ public class analisar {
                         }
                         //Chama método de identificação
                     }
+                    
+                    
+                    
+                    
                     if ((expressao.length - 1) >= i && expressao[i] == '"') {
-                        do {
-
-                            i++;
-                            //acumular literal
-                            if (expressao.length < i) {
-                                //Criar objeto com erro
+                        boolean encontrou = false;
+                        int j;
+                        retornoLiteralmente();
+                         System.out.println(i + "   " + expressao[i]);
+                        for (j = i+1 ; j < expressao.length; j++) {
+                            if (expressao[j] != '"') {
+                                continue;
+                            } else {
+                                i = j;
+                                retornoLiteralmente();                        
+                                encontrou = true;
+                                break;
                             }
-                        } while (expressao[i] != '"');
-                        //Retornar regra de literal.
+                        }
+                        i = j-1;
+                        do {
+                            linhaParaAnalisar = arquivoLido.readLine();
+                            if (linhaParaAnalisar != null) {
+                                numeroLinha++;
+                                if (!linhaParaAnalisar.contains("\"")) {
+                                    linhaParaAnalisar = arquivoLido.readLine();
+                                    if (linhaParaAnalisar == null) {
+                                        retornoLexico retorno = new retornoLexico();
+                                        retorno.Token = "NÃO FOI ENCERRADO O LITERAL.";
+                                        retornoLexico.add(retorno);
+                                        return retornoLexico;
+                                    }
+                                } else {
+                                    encontrou = true;
+                                    expressao = linhaParaAnalisar.toCharArray();
+                                    i = linhaParaAnalisar.indexOf('"');
+                                    retornoLiteralmente();
+                                    System.out.println(i + "   " + expressao[i]);
+     
+                                }
+                            } else {
+                                retornoLexico retorno = new retornoLexico();
+                                retorno.Token = "NÃO FOI ENCERRADO O LITERAL.";
+                                retornoLexico.add(retorno);
+
+                                return retornoLexico;
+                            }
+
+                        } while (!encontrou);
+
                     }
 
                     if ((expressao.length - 1) >= i && expressao[i] == '{') {
@@ -268,6 +308,13 @@ public class analisar {
         }
 
         return new retornoLexico();
+    }
+
+    private static retornoLexico retornoLiteralmente() {
+        retornoLexico retorno = new retornoLexico();
+        retorno.Codigo = enumCodigo.LITERAL.getCodigo();
+        retorno.Token = "\"";
+        return retorno;
     }
 
 }
