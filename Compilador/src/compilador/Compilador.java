@@ -17,7 +17,7 @@ public class Compilador {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        ArrayList<retornoLexico> retornoLexico = analisar.analisarLinha("C:\\Users\\Lemon\\Desktop\\Teste1.txt") ;
+        ArrayList<retornoLexico> retornoLexico = analisar.analisarLinha("C:\\Users\\comp15\\Desktop\\Teste1.txt") ;
     }
     
 }
