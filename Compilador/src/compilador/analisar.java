@@ -56,32 +56,32 @@ public class analisar {
                         }
                         //Chama método de identificação
                     }
-                    
-                    
-                    
-                    
+
                     if ((expressao.length - 1) >= i && expressao[i] == '"') {
                         boolean encontrou = false;
+                        String acumulador = "";
                         int j;
-                        retornoLiteralmente();
-                         System.out.println(i + "   " + expressao[i]);
-                        for (j = i+1 ; j < expressao.length; j++) {
+                        for (j = i + 1; j < expressao.length; j++) {
                             if (expressao[j] != '"') {
+                                acumulador += expressao[j];
                                 continue;
                             } else {
                                 i = j;
-                                retornoLiteralmente();                        
+                                System.out.println(i + "   " + expressao[i]);
                                 encontrou = true;
                                 break;
                             }
                         }
-                        i = j-1;
+
+                        i = j - 1;
+                        int raulComplica = 0;
                         do {
                             linhaParaAnalisar = arquivoLido.readLine();
                             if (linhaParaAnalisar != null) {
                                 numeroLinha++;
                                 if (!linhaParaAnalisar.contains("\"")) {
                                     linhaParaAnalisar = arquivoLido.readLine();
+                                    acumulador += linhaParaAnalisar;
                                     if (linhaParaAnalisar == null) {
                                         retornoLexico retorno = new retornoLexico();
                                         retorno.Token = "NÃO FOI ENCERRADO O LITERAL.";
@@ -91,10 +91,15 @@ public class analisar {
                                 } else {
                                     encontrou = true;
                                     expressao = linhaParaAnalisar.toCharArray();
+                                    for (int k = 0; k < expressao.length; k++) {
+                                        if (expressao[k] != '"') {
+                                            acumulador += expressao[k];
+                                        }
+                                    }
                                     i = linhaParaAnalisar.indexOf('"');
-                                    retornoLiteralmente();
+                                    retornoLexico.add(retornoLiteralmente(acumulador));
                                     System.out.println(i + "   " + expressao[i]);
-     
+
                                 }
                             } else {
                                 retornoLexico retorno = new retornoLexico();
@@ -103,7 +108,7 @@ public class analisar {
 
                                 return retornoLexico;
                             }
-
+                            System.out.println(acumulador);
                         } while (!encontrou);
 
                     }
@@ -154,6 +159,40 @@ public class analisar {
                         break;
                     }
 
+                    if ((expressao.length - 1) >= i && expressao[i] == '@') {
+                        String acumulador = "";
+                        do {
+                            acumulador += expressao[i];
+                            System.out.println(acumulador);
+                            i++;
+                        } while ((expressao.length - 1) >= i && !Character.isWhitespace(expressao[i]));
+                        retornoLexico retorno = new retornoLexico();
+                        retorno.Codigo = enumCodigo.IDENTIFICADOR.getCodigo();
+                        retorno.LinhaArquivo = numeroLinha;
+                        retorno.Token = acumulador;
+                        retornoLexico.add(retorno);
+                    }
+
+                    if ((expressao.length - 1) >= i) {
+                        retornoLexico retorno = null;
+                        retorno = retornoSimboloSimples(expressao[i]);
+                        if (retorno != null) {
+                            retorno.LinhaArquivo = numeroLinha;
+                            retornoLexico.add(retorno);
+                        } else {
+                            String acumularSimboloDuplo = "";
+                            acumularSimboloDuplo = Character.toString(expressao[i]);
+                            if (expressao.length - 1 >= i) {
+                                acumularSimboloDuplo += Character.toString(expressao[i + 1]);
+                            }
+                            retorno = retornoSimboloDuplo(acumularSimboloDuplo);
+                            if (retorno != null) {
+                                retorno.LinhaArquivo = numeroLinha;
+                                retornoLexico.add(retorno);
+                            }
+                        }
+                    }
+
                 }
 
                 linhaParaAnalisar = arquivoLido.readLine();
@@ -163,7 +202,10 @@ public class analisar {
             System.err.printf("Erro na abertura do arquivo: %s.\n", e.getMessage());
         }
 
-        //TODO: VERIFICAR SE ESTÃO SENDO FECHADAS AS ASPAS OU CHAVES
+        retornoLexico finalArquivo = new retornoLexico();
+        finalArquivo.Codigo = enumCodigo.FINALARQUIVO.getCodigo();
+        finalArquivo.Token = "$";
+        
         return retornoLexico;
     }
 
@@ -310,11 +352,108 @@ public class analisar {
         return new retornoLexico();
     }
 
-    private static retornoLexico retornoLiteralmente() {
+    private static retornoLexico retornoLiteralmente(String literalmente) {
         retornoLexico retorno = new retornoLexico();
         retorno.Codigo = enumCodigo.LITERAL.getCodigo();
-        retorno.Token = "\"";
+        retorno.Token = literalmente;
         return retorno;
+    }
+
+    private static retornoLexico retornoSimboloSimples(char simbolo) {
+        retornoLexico retorno = new retornoLexico();
+        switch (simbolo) {
+            case '+':
+                retorno.Codigo = enumCodigo.SOMA.getCodigo();
+                retorno.Token = "+";
+                return retorno;
+            case '-':
+                retorno.Codigo = enumCodigo.SUBTRACAO.getCodigo();
+                retorno.Token = "-";
+                return retorno;
+            case '*':
+                retorno.Codigo = enumCodigo.MULTIPLICACAO.getCodigo();
+                retorno.Token = "*";
+                return retorno;
+            case '/':
+                retorno.Codigo = enumCodigo.DIVISAO.getCodigo();
+                retorno.Token = "/";
+                return retorno;
+            case '[':
+                retorno.Codigo = enumCodigo.ABRECOLCHETE.getCodigo();
+                retorno.Token = "[";
+                return retorno;
+            case ']':
+                retorno.Codigo = enumCodigo.FECHACOLCHETE.getCodigo();
+                retorno.Token = "]";
+                return retorno;
+            case '(':
+                retorno.Codigo = enumCodigo.ABREPARENTESE.getCodigo();
+                retorno.Token = "(";
+                return retorno;
+            case ')':
+                retorno.Codigo = enumCodigo.FECHAPARENTESE.getCodigo();
+                retorno.Token = ")";
+                return retorno;
+            case '=':
+                retorno.Codigo = enumCodigo.IGUAL.getCodigo();
+                retorno.Token = "=";
+                return retorno;
+            case ';':
+                retorno.Codigo = enumCodigo.PONTOVIRGULA.getCodigo();
+                retorno.Token = ";";
+                return retorno;
+        }
+        return null;
+    }
+
+    private static retornoLexico retornoSimboloDuplo(String simbolos) {
+        retornoLexico retorno = new retornoLexico();
+        switch (simbolos) {
+            case ":=":
+                retorno.Codigo = enumCodigo.ATRIBUICAODUPLO.getCodigo();
+                retorno.Token = ":=";
+                return retorno;
+            case ":":
+                retorno.Codigo = enumCodigo.DOISPONTOS.getCodigo();
+                retorno.Token = simbolos;
+                return retorno;
+
+            case ">=":
+                retorno.Codigo = enumCodigo.MAIORIGUAL.getCodigo();
+                retorno.Token = simbolos;
+                return retorno;
+            case ">":
+                retorno.Codigo = enumCodigo.MAIOR.getCodigo();
+                retorno.Token = simbolos;
+                return retorno;
+
+            case "<":
+                retorno.Codigo = enumCodigo.MENOR.getCodigo();
+                retorno.Token = simbolos;
+                return retorno;
+
+            case "<=":
+                retorno.Codigo = enumCodigo.MENORIGUAL.getCodigo();
+                retorno.Token = simbolos;
+                return retorno;
+
+            case "<>":
+                retorno.Codigo = enumCodigo.DIFERENTEDE.getCodigo();
+                retorno.Token = simbolos;
+                return retorno;
+
+            case ".":
+                retorno.Codigo = enumCodigo.PONTO.getCodigo();
+                retorno.Token = simbolos;
+                return retorno;
+
+            case "..":
+                retorno.Codigo = enumCodigo.PONTOSSEGUIDOS.getCodigo();
+                retorno.Token = simbolos;
+                return retorno;
+        }
+
+        return null;
     }
 
 }
