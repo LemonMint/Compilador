@@ -9,10 +9,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  *
@@ -20,28 +25,63 @@ import javax.swing.JOptionPane;
  */
 public class Tela extends javax.swing.JFrame {
 
-    
-    
     /**
      * Creates new form Tela
      */
-    public Tela() {
+    public Tela() throws IOException {
         initComponents();
         MenuAbrir.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent ae) {
                 JFileChooser fc = new JFileChooser();
+                FileNameExtensionFilter xmlFilter = new FileNameExtensionFilter("Akali (*.akali)", "akali");
+                fc.setFileFilter(xmlFilter);
                 //Exibe o diálogo. Deve ser passado por parâmetro o JFrame de origem.
                 fc.showOpenDialog(txtArea);
                 //Captura o objeto File que representa o arquivo selecionado.
                 File selFile = fc.getSelectedFile();
                 txtArea.setText(lerArquivo(selFile.getAbsolutePath()));
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+
             }
         });
+
+        MenuNovo.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                txtArea.setText("");
+            }
+        });
+
+        btLimpar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                txtArea.setText("");
+            }
+        });
+
+        MenuSalvar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                JFileChooser salvandoArquivo = new JFileChooser();
+
+                int resultado = salvandoArquivo.showSaveDialog(null);
+                if (resultado == JFileChooser.APPROVE_OPTION) {
+                    File salvarArquivoEscolhido = salvandoArquivo.getSelectedFile();
+                    try {
+                        OutputStream os = new FileOutputStream(salvarArquivoEscolhido);
+                        os.write(txtArea.getText().getBytes());
+                        os.close();
+                    } catch (IOException ex) {
+                        Logger.getLogger(Tela.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+        }
+        );
     }
-    
+
     private String lerArquivo(String nomeArquivo) {
         FileReader fileReader = null;
         BufferedReader bufferedReader = null;
@@ -78,7 +118,6 @@ public class Tela extends javax.swing.JFrame {
         return null;
     }
 
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -87,12 +126,13 @@ public class Tela extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-        java.awt.GridBagConstraints gridBagConstraints;
 
         jScrollPane1 = new javax.swing.JScrollPane();
         txtArea = new javax.swing.JTextArea();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
+        jButton1 = new javax.swing.JButton();
+        btLimpar = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         MenuNovo = new javax.swing.JMenuItem();
@@ -109,23 +149,10 @@ public class Tela extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(800, 600));
         setPreferredSize(new java.awt.Dimension(800, 600));
-        getContentPane().setLayout(new java.awt.GridBagLayout());
 
         txtArea.setColumns(20);
         txtArea.setRows(5);
         jScrollPane1.setViewportView(txtArea);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.ipadx = 757;
-        gridBagConstraints.ipady = 297;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(38, 10, 0, 10);
-        getContentPane().add(jScrollPane1, gridBagConstraints);
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -145,17 +172,19 @@ public class Tela extends javax.swing.JFrame {
         });
         jScrollPane2.setViewportView(jTable1);
 
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.ipadx = 757;
-        gridBagConstraints.ipady = 153;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(18, 10, 11, 10);
-        getContentPane().add(jScrollPane2, gridBagConstraints);
+        jButton1.setText("Compilar");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        btLimpar.setText("Limpar");
+        btLimpar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btLimparActionPerformed(evt);
+            }
+        });
 
         jMenu1.setText("Arquivo");
 
@@ -200,12 +229,50 @@ public class Tela extends javax.swing.JFrame {
 
         setJMenuBar(jMenuBar1);
 
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(10, 10, 10)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 780, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 780, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btLimpar, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(8, 8, 8)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton1)
+                    .addComponent(btLimpar))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void MenuAbrirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuAbrirActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_MenuAbrirActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void btLimparActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btLimparActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btLimparActionPerformed
 
     /**
      * @param args the command line arguments
@@ -237,7 +304,11 @@ public class Tela extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Tela().setVisible(true);
+                try {
+                    new Tela().setVisible(true);
+                } catch (IOException ex) {
+                    Logger.getLogger(Tela.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
     }
@@ -251,6 +322,8 @@ public class Tela extends javax.swing.JFrame {
     private javax.swing.JMenuItem MenuNovo;
     private javax.swing.JMenuItem MenuSair;
     private javax.swing.JMenuItem MenuSalvar;
+    private javax.swing.JButton btLimpar;
+    private javax.swing.JButton jButton1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
