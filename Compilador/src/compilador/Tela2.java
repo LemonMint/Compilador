@@ -25,12 +25,12 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author Lemon
  */
-public class Tela extends javax.swing.JFrame {
+public class Tela2 extends javax.swing.JFrame {
 
     /**
      * Creates new form Tela
      */
-    public Tela() throws IOException {
+    public Tela2() throws IOException {
         initComponents();
         MenuSair.addActionListener(new ActionListener() {
 
@@ -109,7 +109,7 @@ public class Tela extends javax.swing.JFrame {
                  os.write(txtArea.getText().getBytes());
                  os.close();
                  } catch (IOException ex) {
-                 Logger.getLogger(Tela.class.getName()).log(Level.SEVERE, null, ex);
+                 Logger.getLogger(Tela2.class.getName()).log(Level.SEVERE, null, ex);
                  }
                 
                  }*/
@@ -134,11 +134,11 @@ public class Tela extends javax.swing.JFrame {
                 final String dir = System.getProperty("user.dir");
                 String aux = dir + "\\temp.txt";
                 System.out.println("current dir = " + aux);
-                ArrayList<RetornoLexico1> retornoLexico = Analisar.analisarLinha(aux);
+                ArrayList<RetornoLexico12> retornoLexico = Analisar1.analisarLinha(aux);
                 String colunas[] = new String[]{"Linha", "Token", "Código"};
                 DefaultTableModel defaultTableModel = new DefaultTableModel(colunas, retornoLexico.size());
                 int linha = 0;
-                for (RetornoLexico1 rl : retornoLexico) {
+                for (RetornoLexico12 rl : retornoLexico) {
                     defaultTableModel.setValueAt(rl.LinhaArquivo, linha, 0);
                     defaultTableModel.setValueAt(rl.Token, linha, 1);
                     defaultTableModel.setValueAt(rl.Codigo, linha, 2);
@@ -159,11 +159,11 @@ public class Tela extends javax.swing.JFrame {
                 final String dir = System.getProperty("user.dir");
                 String aux = dir + "\\temp.txt";
                 System.out.println("current dir = " + aux);
-                ArrayList<RetornoLexico1> retornoLexico = Analisar.analisarLinha(aux);
+                ArrayList<RetornoLexico12> retornoLexico = Analisar1.analisarLinha(aux);
                 String colunas[] = new String[]{"Linha", "Token", "Código"};
                 DefaultTableModel defaultTableModel = new DefaultTableModel(colunas, retornoLexico.size());
                 int linha = 0;
-                for (RetornoLexico1 rl : retornoLexico) {
+                for (RetornoLexico12 rl : retornoLexico) {
                     defaultTableModel.setValueAt(rl.LinhaArquivo, linha, 0);
                     defaultTableModel.setValueAt(rl.Token, linha, 1);
                     defaultTableModel.setValueAt(rl.Codigo, linha, 2);
@@ -415,23 +415,24 @@ public class Tela extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Tela.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Tela2.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Tela.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Tela2.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Tela.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Tela2.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Tela.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Tela2.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    new Tela().setVisible(true);
+                    new Tela2().setVisible(true);
                 } catch (IOException ex) {
-                    Logger.getLogger(Tela.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(Tela2.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         });

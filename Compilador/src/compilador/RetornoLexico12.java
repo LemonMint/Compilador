@@ -9,7 +9,7 @@ package compilador;
  *
  * @author Marcos Paulo
  */
-public class RetornoLexico1 {
+public class RetornoLexico12 {
     
     public int LinhaArquivo;
     public int Codigo;
