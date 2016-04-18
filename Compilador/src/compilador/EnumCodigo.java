@@ -9,7 +9,7 @@ package compilador;
  *
  * @author Marcos Paulo
  */
-    public enum EnumCodigo1{
+    public enum EnumCodigo{
     
         PROGRAM(1),
         LABEL(2),
@@ -66,7 +66,7 @@ package compilador;
 
         private int codigo;
         
-        EnumCodigo1(int codigo){
+        EnumCodigo(int codigo){
             this.codigo = codigo;
         }
 
