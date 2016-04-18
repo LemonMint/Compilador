@@ -5,6 +5,8 @@
  */
 package compilador;
 
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -13,6 +15,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -32,6 +35,9 @@ public class Tela extends javax.swing.JFrame {
      */
     public Tela() throws IOException {
         initComponents();
+        URL url = this.getClass().getResource("/resources/cli.png");
+        Image imagemTitulo = Toolkit.getDefaultToolkit().getImage(url);
+        this.setIconImage(imagemTitulo);
         MenuSair.addActionListener(new ActionListener() {
 
             @Override
