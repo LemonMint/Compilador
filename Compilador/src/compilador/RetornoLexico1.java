@@ -9,10 +9,9 @@ package compilador;
  *
  * @author Marcos Paulo
  */
-public class retornoLexico {
+public class RetornoLexico1 {
     
     public int LinhaArquivo;
     public int Codigo;
     public String Token;
-    
 }

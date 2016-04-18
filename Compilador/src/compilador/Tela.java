@@ -134,11 +134,11 @@ public class Tela extends javax.swing.JFrame {
                 final String dir = System.getProperty("user.dir");
                 String aux = dir + "\\temp.txt";
                 System.out.println("current dir = " + aux);
-                ArrayList<RetornoLexico> retornoLexico = analisar.analisarLinha(aux);
+                ArrayList<RetornoLexico1> retornoLexico = Analisar.analisarLinha(aux);
                 String colunas[] = new String[]{"Linha", "Token", "Código"};
                 DefaultTableModel defaultTableModel = new DefaultTableModel(colunas, retornoLexico.size());
                 int linha = 0;
-                for (RetornoLexico rl : retornoLexico) {
+                for (RetornoLexico1 rl : retornoLexico) {
                     defaultTableModel.setValueAt(rl.LinhaArquivo, linha, 0);
                     defaultTableModel.setValueAt(rl.Token, linha, 1);
                     defaultTableModel.setValueAt(rl.Codigo, linha, 2);
@@ -159,11 +159,11 @@ public class Tela extends javax.swing.JFrame {
                 final String dir = System.getProperty("user.dir");
                 String aux = dir + "\\temp.txt";
                 System.out.println("current dir = " + aux);
-                ArrayList<RetornoLexico> retornoLexico = analisar.analisarLinha(aux);
+                ArrayList<RetornoLexico1> retornoLexico = Analisar.analisarLinha(aux);
                 String colunas[] = new String[]{"Linha", "Token", "Código"};
                 DefaultTableModel defaultTableModel = new DefaultTableModel(colunas, retornoLexico.size());
                 int linha = 0;
-                for (RetornoLexico rl : retornoLexico) {
+                for (RetornoLexico1 rl : retornoLexico) {
                     defaultTableModel.setValueAt(rl.LinhaArquivo, linha, 0);
                     defaultTableModel.setValueAt(rl.Token, linha, 1);
                     defaultTableModel.setValueAt(rl.Codigo, linha, 2);
