@@ -26,7 +26,6 @@ public class analisar {
             BufferedReader arquivoLido = new BufferedReader(arquivo);
 
             String linhaParaAnalisar = arquivoLido.readLine();
-            System.out.println(linhaParaAnalisar);
             while (linhaParaAnalisar != null) {
                 numeroLinha++;
                 char[] expressao = linhaParaAnalisar.toCharArray();
@@ -67,17 +66,13 @@ public class analisar {
                         for (j = i + 1; j < expressao.length; j++) {
                             if (expressao[j] != '"') {
                                 acumulador += expressao[j];
-                                System.out.println(acumulador);
                                 continue;
                             } else {
                                 i = j;
-                                System.out.println(i + "   " + expressao[i]);
                                 encontrou = true;
                                 break;
                             }
                         }
-                        System.out.println("i:" + i);
-                        System.out.println("j:" + j);
                         i = j - 1;
                         if (encontrou) {
                             retornoLexico.add(retornoLiteralmente("\"" + acumulador + "\"", numeroLinha));
@@ -85,7 +80,6 @@ public class analisar {
                         }
                         do {
                             linhaParaAnalisar = arquivoLido.readLine();
-                            System.out.println("AQUI o" + linhaParaAnalisar);
                             if (linhaParaAnalisar != null) {
                                 numeroLinha++;
                                 if (!linhaParaAnalisar.contains("\"")) {
@@ -107,7 +101,6 @@ public class analisar {
                                     }
                                     i = linhaParaAnalisar.indexOf('"');
                                     retornoLexico.add(retornoLiteralmente("\"" + acumulador + "\"", numeroLinha));
-                                    System.out.println(i + "   " + expressao[i]);
 
                                 }
                             } else {
@@ -117,7 +110,6 @@ public class analisar {
 
                                 return retornoLexico;
                             }
-                            System.out.println(acumulador);
                         } while (!encontrou);
                     }
 
@@ -174,7 +166,6 @@ public class analisar {
                         String acumulador = "";
                         do {
                             acumulador += expressao[i];
-                            System.out.println(acumulador);
                             i++;
                         } while ((expressao.length - 1) >= i && !Character.isWhitespace(expressao[i]));
                         RetornoLexico retorno = new RetornoLexico();

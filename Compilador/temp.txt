@@ -1,1 +1,8 @@
-ELSE IF        @lolol {LOLOL}
+IF ELSE
+@LOLOL
+"LOLOL"
+DSDSDS
+COMO
+. ..
+>
+>+ >=

@@ -219,7 +219,6 @@ public class Tela extends javax.swing.JFrame {
             bufferedWriter.write(textoArquivo);
             bufferedWriter.flush();
             //Se chegou ate essa linha, conseguiu salvar o arquivo com sucesso.
-            JOptionPane.showMessageDialog(this, "Salvo com sucesso");
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(this, "Erro ao salvar o arquivo: " + ex.getMessage());
         } finally {
