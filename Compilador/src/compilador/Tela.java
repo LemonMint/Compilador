@@ -8,16 +8,18 @@ package compilador;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -30,6 +32,37 @@ public class Tela extends javax.swing.JFrame {
      */
     public Tela() throws IOException {
         initComponents();
+        MenuSair.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                System.exit(0);
+            }
+        });
+        
+        MenuManual.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                JOptionPane.showMessageDialog(jMenu1, "Manual ainda não implementado");
+            }
+        });
+        
+        MenuAtualizar.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                JOptionPane.showMessageDialog(jMenu1, "Nenhuma atualização disponível");
+            }
+        });
+        
+        MenuCreditos.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                JOptionPane.showMessageDialog(jMenu1, "Implementado por:\nMarcos Paulo\nRaul Porto");
+            }
+        });
         MenuAbrir.addActionListener(new ActionListener() {
 
             @Override
@@ -57,6 +90,7 @@ public class Tela extends javax.swing.JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 txtArea.setText("");
+                jTable1.removeAll();
             }
         });
 
@@ -64,22 +98,79 @@ public class Tela extends javax.swing.JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                JFileChooser salvandoArquivo = new JFileChooser();
-
-                int resultado = salvandoArquivo.showSaveDialog(null);
-                if (resultado == JFileChooser.APPROVE_OPTION) {
-                    File salvarArquivoEscolhido = salvandoArquivo.getSelectedFile();
-                    try {
-                        OutputStream os = new FileOutputStream(salvarArquivoEscolhido);
-                        os.write(txtArea.getText().getBytes());
-                        os.close();
-                    } catch (IOException ex) {
-                        Logger.getLogger(Tela.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+                /*       JFileChooser salvandoArquivo = new JFileChooser();
+                
+                 int resultado = salvandoArquivo.showSaveDialog(null);
+                 if (resultado == JFileChooser.APPROVE_OPTION) {
+                 File salvarArquivoEscolhido = salvandoArquivo.getSelectedFile();
+                 try {
+                 OutputStream os = new FileOutputStream(salvarArquivoEscolhido);
+                 os.write(txtArea.getText().getBytes());
+                 os.close();
+                 } catch (IOException ex) {
+                 Logger.getLogger(Tela.class.getName()).log(Level.SEVERE, null, ex);
+                 }
+                
+                 }*/
+                JFileChooser fc = new JFileChooser();
+                fc.showSaveDialog(txtArea);
+                if (fc.getSelectedFile().getName().endsWith(".akali") || fc.getSelectedFile().getName().endsWith(".txt")) {
+                    gravarArquivo(fc.getSelectedFile().getAbsolutePath(), txtArea.getText());
+                } else {
+                    gravarArquivo(fc.getSelectedFile().getAbsolutePath() + ".akali", txtArea.getText());
                 }
             }
         }
         );
+
+        MenuCompilar.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                FileReader fileReader = null;
+                BufferedReader bufferedReader = null;
+                gravarArquivo("temp.txt", txtArea.getText());
+                final String dir = System.getProperty("user.dir");
+                String aux = dir + "\\temp.txt";
+                System.out.println("current dir = " + aux);
+                ArrayList<RetornoLexico> retornoLexico = analisar.analisarLinha(aux);
+                String colunas[] = new String[]{"Linha", "Token", "Código"};
+                DefaultTableModel defaultTableModel = new DefaultTableModel(colunas, retornoLexico.size());
+                int linha = 0;
+                for (RetornoLexico rl : retornoLexico) {
+                    defaultTableModel.setValueAt(rl.LinhaArquivo, linha, 0);
+                    defaultTableModel.setValueAt(rl.Token, linha, 1);
+                    defaultTableModel.setValueAt(rl.Codigo, linha, 2);
+                    linha++;
+                }
+                jTable1.setModel(defaultTableModel);
+            }
+        });
+
+        BtCompilar.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                jTable1.removeAll();
+                FileReader fileReader = null;
+                BufferedReader bufferedReader = null;
+                gravarArquivo("temp.txt", txtArea.getText());
+                final String dir = System.getProperty("user.dir");
+                String aux = dir + "\\temp.txt";
+                System.out.println("current dir = " + aux);
+                ArrayList<RetornoLexico> retornoLexico = analisar.analisarLinha(aux);
+                String colunas[] = new String[]{"Linha", "Token", "Código"};
+                DefaultTableModel defaultTableModel = new DefaultTableModel(colunas, retornoLexico.size());
+                int linha = 0;
+                for (RetornoLexico rl : retornoLexico) {
+                    defaultTableModel.setValueAt(rl.LinhaArquivo, linha, 0);
+                    defaultTableModel.setValueAt(rl.Token, linha, 1);
+                    defaultTableModel.setValueAt(rl.Codigo, linha, 2);
+                    linha++;
+                }
+                jTable1.setModel(defaultTableModel);
+            }
+        });
     }
 
     private String lerArquivo(String nomeArquivo) {
@@ -118,6 +209,38 @@ public class Tela extends javax.swing.JFrame {
         return null;
     }
 
+    private void gravarArquivo(String nomeArquivo, String textoArquivo) {
+        FileWriter fileWriter = null;
+        BufferedWriter bufferedWriter = null;
+        try {
+            fileWriter = new FileWriter(nomeArquivo, false);
+            bufferedWriter = new BufferedWriter(fileWriter);
+            bufferedWriter.write(textoArquivo);
+            bufferedWriter.flush();
+            //Se chegou ate essa linha, conseguiu salvar o arquivo com sucesso.
+            JOptionPane.showMessageDialog(this, "Salvo com sucesso");
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(this, "Erro ao salvar o arquivo: " + ex.getMessage());
+        } finally {
+            if (bufferedWriter != null) {
+                try {
+                    bufferedWriter.close();
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(this, "Erro ao salvar o arquivo: "
+                            + ex.getMessage());
+                }
+            }
+            if (fileWriter != null) {
+                try {
+                    fileWriter.close();
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(this, "Erro ao salvar o arquivo: "
+                            + ex.getMessage());
+                }
+            }
+        }
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -131,7 +254,7 @@ public class Tela extends javax.swing.JFrame {
         txtArea = new javax.swing.JTextArea();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
-        jButton1 = new javax.swing.JButton();
+        BtCompilar = new javax.swing.JButton();
         btLimpar = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
@@ -148,7 +271,6 @@ public class Tela extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(800, 600));
-        setPreferredSize(new java.awt.Dimension(800, 600));
 
         txtArea.setColumns(20);
         txtArea.setRows(5);
@@ -172,10 +294,10 @@ public class Tela extends javax.swing.JFrame {
         });
         jScrollPane2.setViewportView(jTable1);
 
-        jButton1.setText("Compilar");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        BtCompilar.setText("Compilar");
+        BtCompilar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                BtCompilarActionPerformed(evt);
             }
         });
 
@@ -234,16 +356,17 @@ public class Tela extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(10, 10, 10)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 780, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 780, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btLimpar, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 780, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 780, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(BtCompilar, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btLimpar, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -251,12 +374,13 @@ public class Tela extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(8, 8, 8)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
+                    .addComponent(BtCompilar)
                     .addComponent(btLimpar))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -266,9 +390,9 @@ public class Tela extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_MenuAbrirActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void BtCompilarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtCompilarActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_BtCompilarActionPerformed
 
     private void btLimparActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btLimparActionPerformed
         // TODO add your handling code here:
@@ -314,6 +438,7 @@ public class Tela extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton BtCompilar;
     private javax.swing.JMenuItem MenuAbrir;
     private javax.swing.JMenuItem MenuAtualizar;
     private javax.swing.JMenuItem MenuCompilar;
@@ -323,7 +448,6 @@ public class Tela extends javax.swing.JFrame {
     private javax.swing.JMenuItem MenuSair;
     private javax.swing.JMenuItem MenuSalvar;
     private javax.swing.JButton btLimpar;
-    private javax.swing.JButton jButton1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;

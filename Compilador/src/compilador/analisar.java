@@ -16,8 +16,8 @@ import java.util.ArrayList;
  */
 public class analisar {
 
-    public static ArrayList<retornoLexico> analisarLinha(String caminhoArquivo) {
-        ArrayList<retornoLexico> retornoLexico = new ArrayList<retornoLexico>();
+    public static ArrayList<RetornoLexico> analisarLinha(String caminhoArquivo) {
+        ArrayList<RetornoLexico> retornoLexico = new ArrayList<RetornoLexico>();
 
         try {
 
@@ -26,7 +26,7 @@ public class analisar {
             BufferedReader arquivoLido = new BufferedReader(arquivo);
 
             String linhaParaAnalisar = arquivoLido.readLine();
-
+            System.out.println(linhaParaAnalisar);
             while (linhaParaAnalisar != null) {
                 numeroLinha++;
                 char[] expressao = linhaParaAnalisar.toCharArray();
@@ -34,16 +34,18 @@ public class analisar {
                 for (int i = 0; i < expressao.length; i++) {
 
                     if (String.valueOf(expressao[i]).matches("[a-zA-Z]")) {
-                        //comando ou erro
-                        String comando = "";
+                        String comando = String.valueOf(expressao[i]);
                         do {
-                            comando += expressao[i];
-                            i++;
-                            if (expressao.length <= i) {
-                                //Chama método de identificação
-                                retornoLexico retorno = identificarPalavraReservada(comando);
+                            if(i == expressao.length-1)
+                                break;
+                            if (String.valueOf(expressao[i]).matches("[a-zA-Z]")) {
+                                i++;
+                                comando += expressao[i];
+                            }
+                            //Chama método de identificação
+                            RetornoLexico retorno = identificarPalavraReservada(comando);
+                            if (retorno.Codigo != 0) {
                                 retorno.LinhaArquivo = numeroLinha;
-
                                 retornoLexico.add(retorno);
                                 break;
                             }
@@ -51,12 +53,13 @@ public class analisar {
 
                         if ((expressao.length - 1) >= i && String.valueOf(expressao[i]).matches("[0-9]")) {
                             //retorna erro
-                            retornoLexico retorno = new retornoLexico();
+                            RetornoLexico retorno = new RetornoLexico();
                             retorno.Token = "ERRO LÉXICO - PALAVRA RESERVADA NÃO ENCONTRADA. ";
                         }
                         //Chama método de identificação
                     }
 
+                    //LITERAL
                     if ((expressao.length - 1) >= i && expressao[i] == '"') {
                         boolean encontrou = false;
                         String acumulador = "";
@@ -64,6 +67,7 @@ public class analisar {
                         for (j = i + 1; j < expressao.length; j++) {
                             if (expressao[j] != '"') {
                                 acumulador += expressao[j];
+                                System.out.println(acumulador);
                                 continue;
                             } else {
                                 i = j;
@@ -72,18 +76,23 @@ public class analisar {
                                 break;
                             }
                         }
-
+                        System.out.println("i:" + i);
+                        System.out.println("j:" + j);
                         i = j - 1;
-                        int raulComplica = 0;
+                        if (encontrou) {
+                            retornoLexico.add(retornoLiteralmente("\"" + acumulador + "\"", numeroLinha));
+                            break;
+                        }
                         do {
                             linhaParaAnalisar = arquivoLido.readLine();
+                            System.out.println("AQUI o" + linhaParaAnalisar);
                             if (linhaParaAnalisar != null) {
                                 numeroLinha++;
                                 if (!linhaParaAnalisar.contains("\"")) {
                                     linhaParaAnalisar = arquivoLido.readLine();
                                     acumulador += linhaParaAnalisar;
                                     if (linhaParaAnalisar == null) {
-                                        retornoLexico retorno = new retornoLexico();
+                                        RetornoLexico retorno = new RetornoLexico();
                                         retorno.Token = "NÃO FOI ENCERRADO O LITERAL.";
                                         retornoLexico.add(retorno);
                                         return retornoLexico;
@@ -97,12 +106,12 @@ public class analisar {
                                         }
                                     }
                                     i = linhaParaAnalisar.indexOf('"');
-                                    retornoLexico.add(retornoLiteralmente(acumulador));
+                                    retornoLexico.add(retornoLiteralmente("\"" + acumulador + "\"", numeroLinha));
                                     System.out.println(i + "   " + expressao[i]);
 
                                 }
                             } else {
-                                retornoLexico retorno = new retornoLexico();
+                                RetornoLexico retorno = new RetornoLexico();
                                 retorno.Token = "NÃO FOI ENCERRADO O LITERAL.";
                                 retornoLexico.add(retorno);
 
@@ -110,7 +119,6 @@ public class analisar {
                             }
                             System.out.println(acumulador);
                         } while (!encontrou);
-
                     }
 
                     if ((expressao.length - 1) >= i && expressao[i] == '{') {
@@ -126,6 +134,9 @@ public class analisar {
                             }
                         }
                         i = j;
+                        if (encontrou) {
+                            break;
+                        }
                         do {
                             linhaParaAnalisar = arquivoLido.readLine();
                             if (linhaParaAnalisar != null) {
@@ -133,7 +144,7 @@ public class analisar {
                                 if (!linhaParaAnalisar.contains("}")) {
                                     linhaParaAnalisar = arquivoLido.readLine();
                                     if (linhaParaAnalisar == null) {
-                                        retornoLexico retorno = new retornoLexico();
+                                        RetornoLexico retorno = new RetornoLexico();
                                         retorno.Token = "NÃO FOI ENCERRADO O COMENTÁRIO DE BLOCO.";
                                         retornoLexico.add(retorno);
 
@@ -145,7 +156,7 @@ public class analisar {
                                     i = linhaParaAnalisar.indexOf('}');
                                 }
                             } else {
-                                retornoLexico retorno = new retornoLexico();
+                                RetornoLexico retorno = new RetornoLexico();
                                 retorno.Token = "NÃO FOI ENCERRADO O COMENTÁRIO DE BLOCO.";
                                 retornoLexico.add(retorno);
 
@@ -166,7 +177,7 @@ public class analisar {
                             System.out.println(acumulador);
                             i++;
                         } while ((expressao.length - 1) >= i && !Character.isWhitespace(expressao[i]));
-                        retornoLexico retorno = new retornoLexico();
+                        RetornoLexico retorno = new RetornoLexico();
                         retorno.Codigo = enumCodigo.IDENTIFICADOR.getCodigo();
                         retorno.LinhaArquivo = numeroLinha;
                         retorno.Token = acumulador;
@@ -174,25 +185,52 @@ public class analisar {
                     }
 
                     if ((expressao.length - 1) >= i) {
-                        retornoLexico retorno = null;
+                        RetornoLexico retorno = null;
                         retorno = retornoSimboloSimples(expressao[i]);
                         if (retorno != null) {
                             retorno.LinhaArquivo = numeroLinha;
                             retornoLexico.add(retorno);
                         } else {
                             String acumularSimboloDuplo = "";
+                            String AcumularSimboloUnico = Character.toString(expressao[i]);
                             acumularSimboloDuplo = Character.toString(expressao[i]);
-                            if (expressao.length - 1 >= i) {
+                            if (expressao.length - 2 >= i) {
                                 acumularSimboloDuplo += Character.toString(expressao[i + 1]);
-                            }
-                            retorno = retornoSimboloDuplo(acumularSimboloDuplo);
-                            if (retorno != null) {
-                                retorno.LinhaArquivo = numeroLinha;
-                                retornoLexico.add(retorno);
+                                retorno = retornoSimboloDuplo(acumularSimboloDuplo);
+                                if (retorno != null) {
+                                    retorno.LinhaArquivo = numeroLinha;
+                                    retornoLexico.add(retorno);
+                                    i = i + 2;
+                                } else {
+                                    retorno = retornoSimboloDuploUnico(AcumularSimboloUnico);
+
+                                    if (retorno != null) {
+                                        retorno.LinhaArquivo = numeroLinha;
+                                        retornoLexico.add(retorno);
+                                    }
+                                }
+
+                            } else {
+                                retorno = retornoSimboloDuploUnico(AcumularSimboloUnico);
+
+                                if (retorno != null) {
+                                    retorno.LinhaArquivo = numeroLinha;
+                                    retornoLexico.add(retorno);
+                                }
                             }
                         }
                     }
 
+                    /*
+                     if ((expressao.length - 1) >= i) {
+                     RetornoLexico retorno = null;
+                     String acumularSimboloDuplo = "";
+                     acumularSimboloDuplo = Character.toString(expressao[i]);
+                     if (expressao.length - 2 >= i) {
+                     acumularSimboloDuplo += Character.toString(expressao[i + 1]);
+                     retorno = retornoSimboloDuplo(acumularSimboloDuplo);
+                     }
+                     }*/
                 }
 
                 linhaParaAnalisar = arquivoLido.readLine();
@@ -202,15 +240,15 @@ public class analisar {
             System.err.printf("Erro na abertura do arquivo: %s.\n", e.getMessage());
         }
 
-        retornoLexico finalArquivo = new retornoLexico();
+        RetornoLexico finalArquivo = new RetornoLexico();
         finalArquivo.Codigo = enumCodigo.FINALARQUIVO.getCodigo();
         finalArquivo.Token = "$";
-        
+
         return retornoLexico;
     }
 
-    private static retornoLexico identificarPalavraReservada(String palavra) {
-        retornoLexico retorno = new retornoLexico();
+    private static RetornoLexico identificarPalavraReservada(String palavra) {
+        RetornoLexico retorno = new RetornoLexico();
         switch (palavra) {
 
             case "PROGRAM":
@@ -349,18 +387,19 @@ public class analisar {
                 return retorno;
         }
 
-        return new retornoLexico();
+        return new RetornoLexico();
     }
 
-    private static retornoLexico retornoLiteralmente(String literalmente) {
-        retornoLexico retorno = new retornoLexico();
+    private static RetornoLexico retornoLiteralmente(String literalmente, int linha) {
+        RetornoLexico retorno = new RetornoLexico();
+        retorno.LinhaArquivo = linha;
         retorno.Codigo = enumCodigo.LITERAL.getCodigo();
         retorno.Token = literalmente;
         return retorno;
     }
 
-    private static retornoLexico retornoSimboloSimples(char simbolo) {
-        retornoLexico retorno = new retornoLexico();
+    private static RetornoLexico retornoSimboloSimples(char simbolo) {
+        RetornoLexico retorno = new RetornoLexico();
         switch (simbolo) {
             case '+':
                 retorno.Codigo = enumCodigo.SOMA.getCodigo();
@@ -394,41 +433,55 @@ public class analisar {
                 retorno.Codigo = enumCodigo.FECHAPARENTESE.getCodigo();
                 retorno.Token = ")";
                 return retorno;
-            case '=':
-                retorno.Codigo = enumCodigo.IGUAL.getCodigo();
-                retorno.Token = "=";
-                return retorno;
             case ';':
                 retorno.Codigo = enumCodigo.PONTOVIRGULA.getCodigo();
                 retorno.Token = ";";
                 return retorno;
+            case '=':
+                retorno.Codigo = enumCodigo.IGUAL.getCodigo();
+                retorno.Token = "=";
+                return retorno;
+
         }
         return null;
     }
 
-    private static retornoLexico retornoSimboloDuplo(String simbolos) {
-        retornoLexico retorno = new retornoLexico();
+    private static RetornoLexico retornoSimboloDuploUnico(String simbolos) {
+        RetornoLexico retorno = new RetornoLexico();
         switch (simbolos) {
-            case ":=":
-                retorno.Codigo = enumCodigo.ATRIBUICAODUPLO.getCodigo();
-                retorno.Token = ":=";
+            case ">":
+                retorno.Codigo = enumCodigo.MAIOR.getCodigo();
+                retorno.Token = simbolos;
                 return retorno;
             case ":":
                 retorno.Codigo = enumCodigo.DOISPONTOS.getCodigo();
                 retorno.Token = simbolos;
                 return retorno;
 
-            case ">=":
-                retorno.Codigo = enumCodigo.MAIORIGUAL.getCodigo();
-                retorno.Token = simbolos;
-                return retorno;
-            case ">":
-                retorno.Codigo = enumCodigo.MAIOR.getCodigo();
+            case "<":
+                retorno.Codigo = enumCodigo.MENOR.getCodigo();
                 retorno.Token = simbolos;
                 return retorno;
 
-            case "<":
-                retorno.Codigo = enumCodigo.MENOR.getCodigo();
+            case ".":
+                retorno.Codigo = enumCodigo.PONTO.getCodigo();
+                retorno.Token = simbolos;
+                return retorno;
+            default:
+                return null;
+        }
+    }
+
+    private static RetornoLexico retornoSimboloDuplo(String simbolos) {
+        RetornoLexico retorno = new RetornoLexico();
+        switch (simbolos) {
+            case ":=":
+                retorno.Codigo = enumCodigo.ATRIBUICAODUPLO.getCodigo();
+                retorno.Token = ":=";
+                return retorno;
+
+            case ">=":
+                retorno.Codigo = enumCodigo.MAIORIGUAL.getCodigo();
                 retorno.Token = simbolos;
                 return retorno;
 
@@ -442,18 +495,13 @@ public class analisar {
                 retorno.Token = simbolos;
                 return retorno;
 
-            case ".":
-                retorno.Codigo = enumCodigo.PONTO.getCodigo();
-                retorno.Token = simbolos;
-                return retorno;
-
             case "..":
                 retorno.Codigo = enumCodigo.PONTOSSEGUIDOS.getCodigo();
                 retorno.Token = simbolos;
                 return retorno;
+            default:
+                return null;
         }
-
-        return null;
     }
 
 }
