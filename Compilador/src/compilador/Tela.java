@@ -39,7 +39,7 @@ public class Tela extends javax.swing.JFrame {
                 System.exit(0);
             }
         });
-        
+
         MenuManual.addActionListener(new ActionListener() {
 
             @Override
@@ -47,7 +47,7 @@ public class Tela extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(jMenu1, "Manual ainda não implementado");
             }
         });
-        
+
         MenuAtualizar.addActionListener(new ActionListener() {
 
             @Override
@@ -55,7 +55,7 @@ public class Tela extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(jMenu1, "Nenhuma atualização disponível");
             }
         });
-        
+
         MenuCreditos.addActionListener(new ActionListener() {
 
             @Override
@@ -90,7 +90,8 @@ public class Tela extends javax.swing.JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 txtArea.setText("");
-                jTable1.removeAll();
+                String colunas[] = new String[]{"Linha", "Token", "Código"};
+                jTable1.setModel(new DefaultTableModel(colunas, 0));
             }
         });
 
