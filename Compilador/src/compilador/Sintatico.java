@@ -31,8 +31,6 @@ public class Sintatico {
         Stack<Integer> stack = new Stack<>();
         //Adicionando o token 52 que é fim de arquivo (&)
         stack.push(52);
-        //Adicionando no topo da pilha o codigo 53 que é o simbolo inicial(PROGRAMA)
-        stack.push(53);
         //int que receberá o topo da pilha
         int topo;
         /*Inicialização do prmeiro token da fila. Note que que ele não está sendo
