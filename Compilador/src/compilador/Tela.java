@@ -276,6 +276,7 @@ public class Tela extends javax.swing.JFrame {
         MenuAtualizar = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Compilador Akali");
         setMinimumSize(new java.awt.Dimension(800, 600));
 
         txtArea.setColumns(20);
@@ -298,6 +299,7 @@ public class Tela extends javax.swing.JFrame {
                 return types [columnIndex];
             }
         });
+        jTable1.setEnabled(false);
         jScrollPane2.setViewportView(jTable1);
 
         BtCompilar.setText("Compilar");
