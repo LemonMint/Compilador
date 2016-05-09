@@ -17,6 +17,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
@@ -140,7 +141,12 @@ public class Tela extends javax.swing.JFrame {
                 final String dir = System.getProperty("user.dir");
                 String aux = dir + "\\temp.txt";
                 System.out.println("current dir = " + aux);
-                ArrayList<RetornoLexico> retornoLexico = Analisar.analisarLinha(aux);
+                ArrayList<RetornoLexico> retornoLexico = analisar.analisarLinha(aux);
+                try {
+                    Sintatico.analiasarSintaticamente(retornoLexico);
+                } catch (Exception ex) {
+                    Logger.getLogger(Tela.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 String colunas[] = new String[]{"Linha", "Token", "Código"};
                 DefaultTableModel defaultTableModel = new DefaultTableModel(colunas, retornoLexico.size());
                 int linha = 0;
@@ -165,7 +171,12 @@ public class Tela extends javax.swing.JFrame {
                 final String dir = System.getProperty("user.dir");
                 String aux = dir + "\\temp.txt";
                 System.out.println("current dir = " + aux);
-                ArrayList<RetornoLexico> retornoLexico = Analisar.analisarLinha(aux);
+                ArrayList<RetornoLexico> retornoLexico = analisar.analisarLinha(aux);
+                try {
+                    Sintatico.analiasarSintaticamente(retornoLexico);
+                } catch (Exception ex) {
+                    Logger.getLogger(Tela.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 String colunas[] = new String[]{"Linha", "Token", "Código"};
                 DefaultTableModel defaultTableModel = new DefaultTableModel(colunas, retornoLexico.size());
                 int linha = 0;
